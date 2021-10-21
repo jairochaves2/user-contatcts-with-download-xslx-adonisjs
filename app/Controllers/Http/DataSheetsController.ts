@@ -4,7 +4,7 @@ import ExcelJS from 'exceljs'
 import User from 'App/Models/User'
 
 export default class DataSheetsController {
-  public async index({}: HttpContextContract) {
+  public async index({ response }: HttpContextContract) {
     const users = (await User.all()).reverse()
     const usersSerialized = users.map((user) => {
       return user.serialize()
@@ -18,5 +18,6 @@ export default class DataSheetsController {
     ]
     workSheet.addRows(usersSerialized)
     await xlxs.xlsx.writeFile(Application.tmpPath('File.xlsx'))
+    response.download(Application.tmpPath('File.xlsx'))
   }
 }
